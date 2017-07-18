@@ -16,7 +16,8 @@ class DFA {
     List moves = [];
 
     for (int a = 0; a < nodes.length; a++) {
-      List move_paths = nodes[a].paths.where((path) => path[0] != EPSILON).toList();
+      List move_paths =
+          nodes[a].paths.where((path) => path[0] != EPSILON).toList();
 
       moves.addAll(move_paths);
     }
@@ -82,7 +83,8 @@ class DFA {
       }
 
       List<int> first_items = new_nodes.map((ls) => ls[0]).toList();
-      connected_nodes = connected_nodes.where((n) => !first_items.contains(n)).toSet();
+      connected_nodes =
+          connected_nodes.where((n) => !first_items.contains(n)).toSet();
 
       new_nodes.addAll(connected_nodes.map((n) => [n]));
     }
