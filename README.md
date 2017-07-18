@@ -16,4 +16,4 @@ A simple usage example:
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-[tracker]: http://example.com/issues/replaceme
+[tracker]: http://github.com/Qwerp-Derp/bullseye
