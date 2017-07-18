@@ -1,4 +1,4 @@
-# bullseye https://travis-ci.org/Qwerp-Derp/bullseye.svg?branch=master
+# bullseye ![](https://travis-ci.org/Qwerp-Derp/bullseye.svg?branch=master)
 
 Bullseye is a new flavour of regex for Dart, because JavaScript's regex flavour sucks quite a lot.
 
