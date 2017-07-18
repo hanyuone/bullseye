@@ -73,8 +73,7 @@ class NFA {
         group_nodes.add(new_node);
       }
 
-      this._connectNode(
-          items[items.length - 1], group_nodes[group_nodes.length - 1], end);
+      this._connectNode(last(items), last(group_nodes), end);
       this.nodes.addAll(group_nodes.sublist(1));
     } else if (group[0] == "CHAR") {
       start.addPath(group[1], end);
@@ -109,11 +108,4 @@ class NFA {
 
     this._parseRegex();
   }
-}
-
-void main() {
-  NFA test = new NFA(tokeniseRegex("a+"));
-
-  for (int a = 0; a < test.nodes.length; a++)
-    print("${test.nodes[a].ident}, ${test.nodes[a].paths}");
 }

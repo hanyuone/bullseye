@@ -103,6 +103,25 @@ List<String> _parseRange(String range) {
   return chars.toList();
 }
 
+List _flatten(List coll) {
+  List final_coll = [];
+
+  for (var e in coll) {
+    if (e is List)
+      final_coll.addAll(_flatten(e));
+    else
+      final_coll.add(e);
+  }
+
+  return final_coll;
+}
+
+/// Public methods.
+
+dynamic last(List coll) {
+  return coll[coll.length - 1];
+}
+
 /// Turns a range into something easier to work with.
 List tokeniseRegex(String regex) {
   List regex_groups = [];
@@ -154,19 +173,6 @@ List tokeniseRegex(String regex) {
   }
 
   return regex_groups;
-}
-
-List _flatten(List coll) {
-  List final_coll = [];
-
-  for (var e in coll) {
-    if (e is List)
-      final_coll.addAll(_flatten(e));
-    else
-      final_coll.add(e);
-  }
-
-  return final_coll;
 }
 
 int lookbehindLength(List lookbehind) {
@@ -228,7 +234,7 @@ int getLookahead(String regex) {
 
   if (possible_groups.length == 0) return -1;
 
-  List<int> possible = possible_groups[possible_groups.length - 1];
+  List<int> possible = last(possible_groups);
   String possible_la = regex.substring(possible[0], possible[1]);
 
   if (possible_la.startsWith("?") && possible[1] != regex.length - 1) {
