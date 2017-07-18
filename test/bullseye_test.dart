@@ -4,16 +4,47 @@
 import 'package:bullseye/bullseye.dart';
 import 'package:test/test.dart';
 
+bool listEquals(List a, List b) {
+  if (a.length != b.length)
+    return false;
+
+  for (int c = 0; c < a.length; c++) {
+    if (a[c] != b[c])
+      return false;
+  }
+
+  return true;
+}
+
 void main() {
-  group('A group of tests', () {
-    Awesome awesome;
+  print(listEquals(["a"], []));
+  group("Quantifier tests", () {
+    NewRegex quant_test;
 
     setUp(() {
-      awesome = new Awesome();
+      quant_test = new NewRegex("ab*");
     });
 
-    test('First Test', () {
-      expect(awesome.isAwesome, isTrue);
+    test("Positive", () {
+      assert(listEquals(quant_test.allMatches("abbbbbb"), ["abbbbbb"]));
+      assert(listEquals(quant_test.allMatches("aabbaab"), ["a", "abb", "a", "ab"]));
+      assert(listEquals(quant_test.allMatches("cabbeeg"), ["abb"]));
+    });
+
+    test("Negative", () {
+      assert(listEquals(quant_test.allMatches("ccccdde"), []));
+    });
+  });
+
+  group("Group tests", () {
+    NewRegex group_test;
+
+    setUp(() {
+
+    });
+
+    test("Positive", () {
+
     });
   });
 }

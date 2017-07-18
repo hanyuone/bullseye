@@ -97,7 +97,7 @@ List<String> _parseRange(String range) {
       int start = tokenised[a].codeUnitAt(0);
       int end = tokenised[a + 2].codeUnitAt(0);
 
-      chars.addAll(UTF8.decode(_range(start, end)).split(""));
+      chars.addAll(UTF8.decode(_range(start, end + 1)).split(""));
       a += 2;
     } else {
       chars.add(tokenised[a]);
@@ -136,20 +136,18 @@ List tokeniseRegex(String regex) {
 
       index = match_index + 1;
     } else if (regex[index] == "[") {
-      int end_index = regex.indexOf("]");
-      String group_string = regex.substring(index, end_index);
-      bool negative = group_string[1] == "^";
-
-      if (negative)
-        group_string = group_string.substring(1);
+      List<String> group_string;
+      int group_index = regex.indexOf("]") + 1;
       
-      String chars = _parseRange(group_string).join("");
+      if (regex[1] == "^") {
+        group_string = _parseRange(regex.substring(2, group_index - 1));
+        regex_group = ["CHAR", "!!" + group_string.join("")];
+      } else {
+        group_string = _parseRange(regex.substring(1, group_index - 1));
+        regex_group = ["CHAR", group_string.join("")];
+      }
 
-      if (negative)
-        chars = "!!" + chars;
-
-      regex_group = ["RANGE", chars];
-      index = end_index;
+      index = group_index;
     } else {
       regex_group = ["CHAR", regex[index]];
       index++;
