@@ -9,11 +9,7 @@ import "DFA.dart";
 class NewRegex {
   String regex;
   List possible_groups;
-  Map regexes = {
-    "behind": [],
-    "main": [],
-    "ahead": []
-  };
+  Map regexes = {"behind": [], "main": [], "ahead": []};
 
   int lookbehind_length = 0;
   int lookbehind_index;
@@ -31,7 +27,8 @@ class NewRegex {
         this.regex[3] == "=",
         new NewRegex(this.regex.substring(4, lookbehind_index))
       ];
-      lookbehind_length = lookbehindLength(tokeniseRegex(this.regex.substring(4, lookbehind_index)));
+      lookbehind_length = lookbehindLength(
+          tokeniseRegex(this.regex.substring(4, lookbehind_index)));
       this.regex = this.regex.substring(lookbehind_index + 1);
     }
 
@@ -40,7 +37,8 @@ class NewRegex {
     if (lookahead_index != -1) {
       this.regexes["ahead"] = [
         this.regex[lookahead_index + 1] == "=",
-        new NewRegex(this.regex.substring(lookahead_index + 2, this.regex.length - 1))
+        new NewRegex(
+            this.regex.substring(lookahead_index + 2, this.regex.length - 1))
       ];
       this.regex = this.regex.substring(0, lookahead_index - 1);
     }
@@ -64,12 +62,13 @@ class NewRegex {
     int matched_chars = 0;
     bool still_matched = true;
 
-    while (still_matched && matched_chars < msg.length) {
+    while (still_matched && (matched_chars < msg.length)) {
       int temp = matched_chars;
       List paths = this.nodes[current_node].paths;
 
       for (int a = 0; a < paths.length; a++) {
-        bool no_match = paths[a][0].length > 2 && paths[a][0].substring(0, 2) == "!!";
+        bool no_match =
+            (paths[a][0].length > 2) && (paths[a][0].substring(0, 2) == "!!");
         List<String> match_chars;
 
         if (no_match)
@@ -103,26 +102,24 @@ class NewRegex {
 
     for (int a = 0; a < msg.length; a++) {
       if (regexes["behind"].length != 0) {
-        if (regexes["behind"][0] && a < this.lookbehind_length)
-          continue;
+        if (regexes["behind"][0] && a < this.lookbehind_length) continue;
 
         if (!((a < this.lookbehind_length) || !regexes["behind"][0])) {
           NewRegex temp_lb = regexes["behind"][1];
 
-          List<String> lb_matches = temp_lb.allMatches(msg.substring(a - lookbehind_length, a));
+          List<String> lb_matches =
+              temp_lb.allMatches(msg.substring(a - lookbehind_length, a));
 
-          if (regexes["behind"][0] != (lb_matches.length == 1)) {
-            continue;
-          }
+          if (regexes["behind"][0] != (lb_matches.length == 1)) continue;
         }
       }
 
       int match_index = this._matchChars(msg.substring(a));
 
-      if (match_index == -1)
-        continue;
-      
-      if (regexes["ahead"].length != 0 && (regexes["ahead"][0] || !(a + match_index == msg.length))) {
+      if (match_index == -1) continue;
+
+      if (regexes["ahead"].length != 0 &&
+          (regexes["ahead"][0] || !(a + match_index == msg.length))) {
         NewRegex temp_la = regexes["ahead"][1];
         List<String> la_matches;
         bool is_match;
@@ -147,13 +144,11 @@ class NewRegex {
           }
         }
 
-        if (regexes["ahead"][0] != is_match) {
-          continue;
-        }
+        if (regexes["ahead"][0] != is_match) continue;
       }
 
       matches.add(msg.substring(a, a + match_index));
-      a += match_index;
+      a += match_index - 1;
     }
 
     return matches;

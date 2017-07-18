@@ -4,14 +4,13 @@ import "dart:convert";
 
 /// Returns a list of numbers from start to end, inclusive
 /// of start.
-/// 
+///
 ///        _range(5, 10)
 ///     => [5, 6, 7, 8, 9]
 List<int> _range(int start, int end) {
   List<int> out = [];
 
-  for (int a = start; a < end; a++)
-    out.add(a);
+  for (int a = start; a < end; a++) out.add(a);
 
   return out;
 }
@@ -23,8 +22,7 @@ bool _isBalanced(String msg) {
   for (int a = 0; a < msg.length; a++) {
     if (msg[a] == "(")
       counter++;
-    else if (msg[a] == ")")
-      counter--;
+    else if (msg[a] == ")") counter--;
   }
 
   return counter == 0;
@@ -41,8 +39,7 @@ int _matchParens(String msg, int start) {
 
     if (msg[index] == "(")
       counter++;
-    else if (msg[index] == ")")
-      counter--;
+    else if (msg[index] == ")") counter--;
   }
 
   return index;
@@ -76,8 +73,7 @@ List<String> _tokeniseRange(String range) {
     if (index < range.length - 1 && range[index] == "\\") {
       tokenised.add(range[index + 1]);
       index++;
-    }
-    else if (range[index] == "-") {
+    } else if (range[index] == "-") {
       tokenised.add("TO");
     } else {
       tokenised.add(range[index]);
@@ -110,11 +106,7 @@ List<String> _parseRange(String range) {
 /// Turns a range into something easier to work with.
 List tokeniseRegex(String regex) {
   List regex_groups = [];
-  Map<String, String> quantifiers = {
-    "*": "STAR",
-    "+": "PLUS",
-    "?": "QMARK"
-  };
+  Map<String, String> quantifiers = {"*": "STAR", "+": "PLUS", "?": "QMARK"};
 
   int index = 0;
 
@@ -138,7 +130,7 @@ List tokeniseRegex(String regex) {
     } else if (regex[index] == "[") {
       List<String> group_string;
       int group_index = regex.indexOf("]") + 1;
-      
+
       if (regex[1] == "^") {
         group_string = _parseRange(regex.substring(2, group_index - 1));
         regex_group = ["CHAR", "!!" + group_string.join("")];
@@ -180,7 +172,9 @@ List _flatten(List coll) {
 int lookbehindLength(List lookbehind) {
   List new_list = _flatten(lookbehind);
 
-  if (["PLUS", "STAR", "QMARK"].map((item) => new_list.contains(item)).reduce((a, b) => a || b)) {
+  if (["PLUS", "STAR", "QMARK"]
+      .map((item) => new_list.contains(item))
+      .reduce((a, b) => a || b)) {
     throw new ArgumentError("Lookbehind is not of fixed length");
   } else {
     int length = 0;
@@ -191,7 +185,10 @@ int lookbehindLength(List lookbehind) {
       } else if (lookbehind[a][0] == "GROUP") {
         length += lookbehindLength(lookbehind[a][1]);
       } else if (lookbehind[a][0] == "OR") {
-        List<int> lengths = lookbehind[a].sublist(1).map((list) => lookbehindLength([list])).toList();
+        List<int> lengths = lookbehind[a]
+            .sublist(1)
+            .map((list) => lookbehindLength([list]))
+            .toList();
 
         if (!lengths.map((a) => a == lengths[0]).reduce((a, b) => a && b)) {
           throw new ArgumentError("Lookbehind is not of fixed length");
@@ -208,9 +205,8 @@ int lookbehindLength(List lookbehind) {
 /// Gets a lookbehind string in a regex.
 int getLookbehind(String regex) {
   List<List<int>> possible_groups = _groups(regex);
-  
-  if (possible_groups.length == 0)
-    return -1;
+
+  if (possible_groups.length == 0) return -1;
 
   List<int> possible = possible_groups[0];
   String possible_lb = regex.substring(possible[0], possible[1]);
@@ -230,8 +226,7 @@ int getLookbehind(String regex) {
 int getLookahead(String regex) {
   List<List<int>> possible_groups = _groups(regex);
 
-  if (possible_groups.length == 0)
-    return -1;
+  if (possible_groups.length == 0) return -1;
 
   List<int> possible = possible_groups[possible_groups.length - 1];
   String possible_la = regex.substring(possible[0], possible[1]);

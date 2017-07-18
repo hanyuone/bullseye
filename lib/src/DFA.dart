@@ -16,7 +16,7 @@ class DFA {
     List moves = [];
 
     for (int a = 0; a < nodes.length; a++) {
-      List move_paths = nodes[a].paths.where((path) => path[0] != EPSILON);
+      List move_paths = nodes[a].paths.where((path) => path[0] != EPSILON).toList();
 
       moves.addAll(move_paths);
     }
@@ -59,16 +59,21 @@ class DFA {
   void _toDeterministic() {
     List<Node> nfa_nodes = this.nodes;
 
-    List<List<int>> new_nodes = [[0]];
+    List<List<int>> new_nodes = [
+      [0]
+    ];
     List<List> node_paths = [];
     Set<int> used_nodes = new Set();
 
-    while (used_nodes.length < nfa_nodes.length || new_nodes.length > node_paths.length) {
+    while (used_nodes.length < nfa_nodes.length ||
+        new_nodes.length > node_paths.length) {
       Set<int> connected_nodes = new Set();
 
       for (int a = new_nodes.length - node_paths.length; a > 0; a--) {
-        List<int> starting_node = this._epsilonClosure(this.nodes[new_nodes[new_nodes.length - a][0]]);
-        List connections = this._movements(starting_node.map((n) => this.nodes[n]).toList());
+        List<int> starting_node = this
+            ._epsilonClosure(this.nodes[new_nodes[new_nodes.length - a][0]]);
+        List connections =
+            this._movements(starting_node.map((n) => this.nodes[n]).toList());
 
         new_nodes[new_nodes.length - a] = starting_node;
         node_paths.add(connections);
@@ -76,8 +81,8 @@ class DFA {
         connected_nodes.addAll(connections.map((n) => n[1]));
       }
 
-      List<int> first_items = new_nodes.map((ls) => ls[0]);
-      connected_nodes = connected_nodes.where((n) => !first_items.contains(n));
+      List<int> first_items = new_nodes.map((ls) => ls[0]).toList();
+      connected_nodes = connected_nodes.where((n) => !first_items.contains(n)).toSet();
 
       new_nodes.addAll(connected_nodes.map((n) => [n]));
     }
@@ -106,7 +111,7 @@ class DFA {
     NFA nfa = new NFA(tokenised);
     this.nodes = nfa.nodes;
     this.ending_ident = nfa.ending_node;
-    
+
     this.ending_nodes = [];
 
     this._toDeterministic();
@@ -115,7 +120,7 @@ class DFA {
 
 void main() {
   DFA test = new DFA(tokeniseRegex("a*"));
-  
+
   for (int a = 0; a < test.nodes.length; a++)
     print("${test.nodes[a].ident}, ${test.nodes[a].paths}");
 

@@ -20,7 +20,7 @@ class NFA {
       this.node_index += 2;
       Node left = new Node(temp_index);
       Node right = new Node(temp_index + 1);
-      
+
       this._connectNode(group[1], left, right);
 
       start.addPath(EPSILON, left);
@@ -52,7 +52,7 @@ class NFA {
       for (int a = 0; a < connected_groups.length; a++) {
         Node group_start = new Node(temp_index + (2 * a));
         Node group_end = new Node(temp_index + (2 * a) + 1);
-        
+
         this._connectNode(connected_groups[a], group_start, group_end);
 
         start.addPath(EPSILON, group_start);
@@ -73,7 +73,8 @@ class NFA {
         group_nodes.add(new_node);
       }
 
-      this._connectNode(items[items.length - 1], group_nodes[group_nodes.length - 1], end);
+      this._connectNode(
+          items[items.length - 1], group_nodes[group_nodes.length - 1], end);
       this.nodes.addAll(group_nodes.sublist(1));
     } else if (group[0] == "CHAR") {
       start.addPath(group[1], end);
@@ -83,7 +84,7 @@ class NFA {
   /// Parses the final regex.
   void _parseRegex() {
     int starting_index = 0;
-    
+
     for (int a = 0; a < this.regex_groups.length; a++) {
       List current_group = this.regex_groups[a];
 
@@ -112,7 +113,7 @@ class NFA {
 
 void main() {
   NFA test = new NFA(tokeniseRegex("a+"));
-  
+
   for (int a = 0; a < test.nodes.length; a++)
     print("${test.nodes[a].ident}, ${test.nodes[a].paths}");
 }

@@ -4,7 +4,7 @@
 import 'package:bullseye/bullseye.dart';
 
 void main() {
-  NewRegex test = new NewRegex("(?<!a)[a-g]+");
+  NewRegex test = new NewRegex("ab*");
 
-  print(test.allMatches("abeeaewqkafddagg"));
+  print(test.allMatches("aabbaab"));
 }
