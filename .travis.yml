@@ -2,4 +2,4 @@ language: dart
 dart_task:
 - test
 - dartanalyzer: --fatal-warnings lib
-- dartfmt
+- dartfmt: -n lib/src
