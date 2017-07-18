@@ -17,7 +17,6 @@ bool listEquals(List a, List b) {
 }
 
 void main() {
-  print(listEquals(["a"], []));
   group("Quantifier tests", () {
     NewRegex quant_test;
 
