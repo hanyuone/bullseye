@@ -1,5 +1,8 @@
 analyzer:
   strong-mode: true
+  errors:
+    invalid_assignments: warning
+    dead_code: info
 #   exclude:
 #     - path/to/excluded/files/**
 

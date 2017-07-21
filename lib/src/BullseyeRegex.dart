@@ -6,7 +6,7 @@ import "Node.dart";
 import "DFA.dart";
 
 /// Main class for new regex.
-class NewRegex {
+class BullseyeRegex {
   String regex;
   List possible_groups;
   Map regexes = {"behind": [], "main": [], "ahead": []};
@@ -25,7 +25,7 @@ class NewRegex {
     if (lookbehind_index != -1) {
       this.regexes["behind"] = [
         this.regex[3] == "=",
-        new NewRegex(this.regex.substring(4, lookbehind_index))
+        new BullseyeRegex(this.regex.substring(4, lookbehind_index))
       ];
       lookbehind_length = lookbehindLength(
           tokeniseRegex(this.regex.substring(4, lookbehind_index)));
@@ -37,7 +37,7 @@ class NewRegex {
     if (lookahead_index != -1) {
       this.regexes["ahead"] = [
         this.regex[lookahead_index + 1] == "=",
-        new NewRegex(
+        new BullseyeRegex(
             this.regex.substring(lookahead_index + 2, this.regex.length - 1))
       ];
       this.regex = this.regex.substring(0, lookahead_index - 1);
@@ -47,11 +47,11 @@ class NewRegex {
     this.nodes = this.regexes["main"].nodes;
     this.ending_nodes = this.regexes["main"].ending_nodes;
 
-    for (int a = 0; a < nodes.length; a++)
+    for (int a = 0; a < this.nodes.length; a++)
       this.node_indices[this.nodes[a].ident] = a;
   }
 
-  NewRegex(String regex) {
+  BullseyeRegex(String regex) {
     this.regex = regex;
 
     this._init();
@@ -105,7 +105,7 @@ class NewRegex {
         if (regexes["behind"][0] && a < this.lookbehind_length) continue;
 
         if (!((a < this.lookbehind_length) || !regexes["behind"][0])) {
-          NewRegex temp_lb = regexes["behind"][1];
+          BullseyeRegex temp_lb = regexes["behind"][1];
 
           List<String> lb_matches =
               temp_lb.allMatches(msg.substring(a - lookbehind_length, a));
@@ -120,7 +120,7 @@ class NewRegex {
 
       if (regexes["ahead"].length != 0 &&
           (regexes["ahead"][0] || !(a + match_index == msg.length))) {
-        NewRegex temp_la = regexes["ahead"][1];
+        BullseyeRegex temp_la = regexes["ahead"][1];
         List<String> la_matches;
         bool is_match;
 
@@ -148,7 +148,8 @@ class NewRegex {
       }
 
       matches.add(msg.substring(a, a + match_index));
-      a += match_index - 1;
+
+      if (match_index != 0) a += match_index - 1;
     }
 
     return matches;

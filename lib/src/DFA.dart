@@ -71,12 +71,13 @@ class DFA {
       Set<int> connected_nodes = new Set();
 
       for (int a = new_nodes.length - node_paths.length; a > 0; a--) {
-        List<int> starting_node = this
-            ._epsilonClosure(this.nodes[new_nodes[new_nodes.length - a][0]]);
+        int index = new_nodes.length - a;
+        List<int> starting_node =
+            this._epsilonClosure(this.nodes[new_nodes[index][0]]);
         List connections =
             this._movements(starting_node.map((n) => this.nodes[n]).toList());
 
-        new_nodes[new_nodes.length - a] = starting_node;
+        new_nodes[index] = starting_node;
         node_paths.add(connections);
         used_nodes.addAll(starting_node);
         connected_nodes.addAll(connections.map((n) => n[1]));

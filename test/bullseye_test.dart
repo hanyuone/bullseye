@@ -18,10 +18,10 @@ bool listEquals(List a, List b) {
 
 void main() {
   group("Quantifier tests", () {
-    NewRegex quant_test;
+    BullseyeRegex quant_test;
 
     setUp(() {
-      quant_test = new NewRegex("ab*");
+      quant_test = new BullseyeRegex("ab*");
     });
 
     test("Positive", () {
@@ -32,18 +32,39 @@ void main() {
 
     test("Negative", () {
       assert(listEquals(quant_test.allMatches("ccccdde"), []));
+      assert(listEquals(quant_test.allMatches("bbbbbbb"), []));
     });
   });
 
   group("Group tests", () {
-    NewRegex group_test;
+    BullseyeRegex group_test;
 
     setUp(() {
-
+      group_test = new BullseyeRegex("(ab)+c");
     });
 
     test("Positive", () {
+      assert(listEquals(group_test.allMatches("ababababc"), ["ababababc"]));
+      assert(listEquals(group_test.allMatches("dddabacababc"), ["ababc"]));
+      assert(listEquals(group_test.allMatches("bbababcabccab"), ["ababc", "abc"]));
+    });
 
+    test("Negative", () {
+      assert(listEquals(group_test.allMatches("cccccbabbdddqqabbc"), []));
+      assert(listEquals(group_test.allMatches("bbbbc"), []));
+    });
+  });
+
+  group("Range tests", () {
+    BullseyeRegex range_test;
+
+    setUp(() {
+      range_test = new BullseyeRegex("[a-g]+h");
+    });
+
+    test("Positive", () {
+      assert(listEquals(range_test.allMatches("aaaaaagbbdh"), ["aaaaaagbbdh"]));
+      assert(listEquals(range_test.allMatches("ahqqqqcndaabeh"), ["ah", "daabeh"]));
     });
   });
 }

@@ -6,6 +6,4 @@
 /// More dartdocs go here.
 library bullseye;
 
-export 'src/NewRegex.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/BullseyeRegex.dart';

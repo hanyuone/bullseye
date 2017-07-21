@@ -1,8 +1,8 @@
 name: bullseye
-description: A starting point for Dart libraries or applications.
-version: 0.0.1
-#homepage: https://www.example.com
-#author: Hanyuan Li <email@example.com>
+description: A new flavour of regex in Dart.
+version: 0.1.1
+homepage: https://www.github.com/Qwerp-Derp/bullseye
+author: Hanyuan Li <completelyderp@gmail.com>
 
 environment:
   sdk: '>=1.20.1 <2.0.0'

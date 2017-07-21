@@ -2,9 +2,10 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'package:bullseye/bullseye.dart';
+import "dart:convert";
 
 void main() {
-  NewRegex test = new NewRegex("ab*");
+  BullseyeRegex test = new BullseyeRegex("(?<=a)b*");
 
-  print(test.allMatches("aabbaab"));
+  print(JSON.encode(test.allMatches("aabbaab")));
 }
