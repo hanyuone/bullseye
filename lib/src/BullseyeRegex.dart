@@ -12,27 +12,25 @@ class BullseyeRegex {
   Map regexes = {"behind": [], "main": [], "ahead": []};
 
   int lookbehind_length = 0;
-  int lookbehind_index;
-  int lookahead_index;
 
   List<Node> nodes;
   List<int> ending_nodes;
   Map<int, int> node_indices = {};
 
+  /// Initialises regex for matching.
   void _init() {
-    lookbehind_index = getLookbehind(this.regex);
+    int lookbehind_index = getLookbehind(this.regex);
+    int lookahead_index = getLookahead(this.regex);
 
     if (lookbehind_index != -1) {
       this.regexes["behind"] = [
         this.regex[3] == "=",
         new BullseyeRegex(this.regex.substring(4, lookbehind_index))
       ];
-      lookbehind_length = lookbehindLength(
+      this.lookbehind_length = lookbehindLength(
           tokeniseRegex(this.regex.substring(4, lookbehind_index)));
       this.regex = this.regex.substring(lookbehind_index + 1);
     }
-
-    lookahead_index = getLookahead(this.regex);
 
     if (lookahead_index != -1) {
       this.regexes["ahead"] = [
@@ -57,38 +55,41 @@ class BullseyeRegex {
     this._init();
   }
 
+  /// Returns amount of matched chars.
+  /// 
+  /// Goes through a message, and returns the amount of characters
+  /// matched by the regex from the start of the message.
   int _matchChars(String msg) {
     int current_node = 0;
     int matched_chars = 0;
-    bool still_matched = true;
 
-    while (still_matched && (matched_chars < msg.length)) {
+    while (matched_chars < msg.length) {
       int temp = matched_chars;
       List paths = this.nodes[current_node].paths;
 
       for (int a = 0; a < paths.length; a++) {
+        String chars = paths[a][0];
         bool no_match =
-            (paths[a][0].length > 2) && (paths[a][0].substring(0, 2) == "!!");
+            chars.length > 2 && chars.substring(0, 2) == "!!";
         List<String> match_chars;
-
-        if (no_match)
-          match_chars = paths[a][0].split("").sublist(2);
-        else
-          match_chars = paths[a][0].split("");
         int new_node = node_indices[paths[a][1]];
 
-        if (no_match != match_chars.contains(msg[matched_chars])) {
-          temp += 1;
-          current_node = new_node;
-          break;
-        }
+        if (no_match)
+          match_chars = chars.split("").sublist(2);
+        else
+          match_chars = chars.split("");
+
+        if (no_match == match_chars.contains(msg[matched_chars])) continue;
+
+        temp += 1;
+        current_node = new_node;
+        break;
       }
 
-      if (temp != matched_chars) {
+      if (temp != matched_chars)
         matched_chars += 1;
-      } else {
-        still_matched = false;
-      }
+      else
+        break;
     }
 
     if (ending_nodes.contains(this.nodes[current_node].ident))
@@ -97,6 +98,10 @@ class BullseyeRegex {
       return -1;
   }
 
+  /// Returns a list of all matches.
+  /// 
+  /// Given a string [msg], this returns a list of strings
+  /// inside [msg] that match the regex.
   List<String> allMatches(String msg) {
     List<String> matches = [];
 
@@ -106,7 +111,6 @@ class BullseyeRegex {
 
         if (!((a < this.lookbehind_length) || !regexes["behind"][0])) {
           BullseyeRegex temp_lb = regexes["behind"][1];
-
           List<String> lb_matches =
               temp_lb.allMatches(msg.substring(a - lookbehind_length, a));
 
@@ -134,14 +138,11 @@ class BullseyeRegex {
 
         while ((match_index > 0) && !is_match) {
           match_index -= 1;
-
           la_matches = temp_la.allMatches(msg.substring(a + match_index));
 
-          if (la_matches.length > 0) {
-            is_match = msg.substring(a + match_index).startsWith(la_matches[0]);
-          } else {
-            continue;
-          }
+          if (la_matches.length == 0) continue;
+
+          is_match = msg.substring(a + match_index).startsWith(la_matches[0]);
         }
 
         if (regexes["ahead"][0] != is_match) continue;

@@ -118,6 +118,7 @@ List _flatten(List coll) {
 
 /// Public methods.
 
+/// Gets last element of [coll].
 dynamic last(List coll) {
   return coll[coll.length - 1];
 }
@@ -167,6 +168,8 @@ List tokeniseRegex(String regex) {
     if (index < regex.length && quantifiers.containsKey(regex[index])) {
       regex_group = [quantifiers[regex[index]], regex_group];
       index++;
+    } else if (index < regex.length - 2 && regex[index] == "{") {
+      
     }
 
     regex_groups.add(regex_group);

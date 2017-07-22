@@ -7,6 +7,10 @@ import "Methods.dart";
 
 String EPSILON = "";
 
+/// A deterministic finite automaton.
+/// 
+/// A more efficient version of finite automaton, converted
+/// from a non-deterministic FA.
 class DFA {
   List<Node> nodes;
   int ending_ident;
@@ -29,12 +33,8 @@ class DFA {
     Set<int> accessible = new Set();
 
     for (List path in starting_node.paths) {
-      String connect_item = path[0];
-      int connect_node = path[1];
-
-      if (connect_item == EPSILON) {
-        accessible.add(connect_node);
-      }
+      if (path[0] == EPSILON)
+        accessible.add(path[1]);
     }
 
     Set<int> new_elements = new Set();
@@ -42,12 +42,6 @@ class DFA {
     for (int a in accessible) {
       new_elements.addAll(this._epsilonClosure(this.nodes[a]));
       new_elements = new_elements.where((n) => !accessible.contains(n)).toSet();
-    }
-
-    if (new_elements.length == 0) {
-      List<int> accessible_ls = accessible.toList();
-      accessible_ls.insert(0, starting_node.ident);
-      return accessible_ls;
     }
 
     accessible.addAll(new_elements);
@@ -58,26 +52,23 @@ class DFA {
   }
 
   void _toDeterministic() {
-    List<Node> nfa_nodes = this.nodes;
-
     List<List<int>> new_nodes = [
       [0]
     ];
     List<List> node_paths = [];
     Set<int> used_nodes = new Set();
 
-    while (used_nodes.length < nfa_nodes.length ||
+    while (used_nodes.length < this.nodes.length ||
         new_nodes.length > node_paths.length) {
       Set<int> connected_nodes = new Set();
 
-      for (int a = new_nodes.length - node_paths.length; a > 0; a--) {
-        int index = new_nodes.length - a;
+      for (int a = node_paths.length; a < new_nodes.length; a++) {
         List<int> starting_node =
-            this._epsilonClosure(this.nodes[new_nodes[index][0]]);
+            this._epsilonClosure(this.nodes[new_nodes[a][0]]);
         List connections =
             this._movements(starting_node.map((n) => this.nodes[n]).toList());
 
-        new_nodes[index] = starting_node;
+        new_nodes[a] = starting_node;
         node_paths.add(connections);
         used_nodes.addAll(starting_node);
         connected_nodes.addAll(connections.map((n) => n[1]));
@@ -97,7 +88,7 @@ class DFA {
       Node temp_node = new Node(new_nodes[a][0]);
 
       for (int b = 0; b < paths.length; b++) {
-        temp_node.addPath(paths[b][0], nodes[paths[b][1]]);
+        temp_node.addPath(paths[b][0], this.nodes[paths[b][1]]);
       }
 
       actual_nodes.add(temp_node);
